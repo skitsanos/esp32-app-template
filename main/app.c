@@ -47,5 +47,7 @@ void app_main()
 
     ESP_ERROR_CHECK(app_create_event_groups());
 
-    wifi_init_apsta("Skitsanos", "chagsameah");
+    wifi_init_apsta("Skitsanos", "zz");
+
+
 }
