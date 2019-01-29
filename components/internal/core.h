@@ -4,7 +4,7 @@ void task_read_internal_sensors(void *ignore);
 
 void task_read_free_mem(void *ignore);
 
-char *esp_deviceMAC();
+void esp_deviceMAC(char **mac);
 
 float esp_deviceTemperature();
 

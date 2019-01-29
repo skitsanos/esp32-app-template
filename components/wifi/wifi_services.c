@@ -185,13 +185,10 @@ void wifi_init_apsta(char *ssid, char *password)
 			}
 	};
 
-	char *b[strlen(ap_ssid) + 7];
-	sprintf((char *) b, "%s-%s", ap_ssid, esp_deviceMAC());
+	ESP_LOGI(TAG, "Local access point SSID: %s", ap_ssid);
 
-	ESP_LOGI(TAG, "Local access point SSID: %s", (char *) b);
-
-	strcpy((char *) wifi_ap_config.ap.ssid, (char *) b);
-	wifi_ap_config.ap.ssid_len = (uint8_t) strlen((char *) b);
+	strcpy((char *) wifi_ap_config.ap.ssid, ap_ssid);
+	wifi_ap_config.ap.ssid_len = (uint8_t) strlen(ap_ssid);
 
 	strcpy((char *) wifi_sta_config.sta.ssid, (char *) ssid);
 	strcpy((char *) wifi_sta_config.sta.password, (char *) password);

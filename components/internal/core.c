@@ -41,22 +41,12 @@ void task_read_free_mem(void *ignore)
 	vTaskDelete(NULL);
 }
 
-char *esp_deviceMAC()
+void esp_deviceMAC(char **mac)
 {
 	uint8_t sta_mac[6];
 	esp_efuse_mac_get_default(sta_mac);
 
-	str_builder_t *sb = str_builder_create();
-
-	char _temp[6];
-	sprintf(_temp, "%x%x%x%x%x%x", sta_mac[0], sta_mac[1], sta_mac[2], sta_mac[3], sta_mac[4], sta_mac[5]);
-
-	str_builder_add_str(sb, _temp, 0);
-
-	char *buffer = str_builder_dump(sb, NULL);
-	str_builder_destroy(sb);
-
-	return buffer;
+	asprintf(mac,"%x%x%x%x%x%x",sta_mac[0], sta_mac[1], sta_mac[2], sta_mac[3], sta_mac[4], sta_mac[5]);
 }
 
 uint32_t esp_deviceFreeMem()
