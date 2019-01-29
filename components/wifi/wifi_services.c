@@ -23,7 +23,7 @@ esp_err_t wifi_connect()
 	switch (r)
 	{
 		case ESP_OK:
-			ESP_LOGI(TAG, "WIFI Connected.");
+			ESP_LOGI(TAG, "WIFI Connected. Authenticating...");
 			break;
 
 		case ESP_ERR_WIFI_NOT_INIT:
@@ -171,8 +171,9 @@ void wifi_init_apsta(char *ssid, char *password)
 
 	wifi_config_t wifi_ap_config = {
 			.ap = {
-					.ssid = "",
-					.password = "",
+					.ssid = ap_ssid,
+					.ssid_len = (uint8_t) strlen(ap_ssid),
+					.password = ap_password,
 					.max_connection = 4,
 					.authmode = WIFI_AUTH_WPA_WPA2_PSK
 			}
@@ -187,19 +188,8 @@ void wifi_init_apsta(char *ssid, char *password)
 
 	ESP_LOGI(TAG, "Local access point SSID: %s", ap_ssid);
 
-	strcpy((char *) wifi_ap_config.ap.ssid, ap_ssid);
-	wifi_ap_config.ap.ssid_len = (uint8_t) strlen(ap_ssid);
-
-	strcpy((char *) wifi_sta_config.sta.ssid, (char *) ssid);
-	strcpy((char *) wifi_sta_config.sta.password, (char *) password);
-
-	//wifi_config_t wifi_sta_config;
-
-	//memset(wifi_sta_config.sta.ssid, 0, strlen((char *) ssid));
-	//memset(wifi_sta_config.sta.password, 0, strlen((char *) password));
-
-	//strcpy((char *) wifi_sta_config.sta.ssid, (char *) ssid);
-	//strcpy((char *) wifi_sta_config.sta.password, (char *) password);
+	strcpy((char *) wifi_sta_config.sta.ssid, ssid);
+	strcpy((char *) wifi_sta_config.sta.password, password);
 
 	if (strlen(ap_password) == 0)
 	{
@@ -238,8 +228,8 @@ void wifi_init_sta(char *ssid, char *password)
 			}
 	};
 
-	strcpy((char *) wifi_sta_config.sta.ssid, (char *) ssid);
-	strcpy((char *) wifi_sta_config.sta.password, (char *) password);
+	strcpy((char *) wifi_sta_config.sta.ssid, ssid);
+	strcpy((char *) wifi_sta_config.sta.password, password);
 
 	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_sta_config));
 
