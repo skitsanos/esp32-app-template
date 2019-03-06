@@ -1,8 +1,44 @@
 cmake_minimum_required(VERSION 3.5)
+#
+# Checking for most recent ESP-IDF
+#
+message("ESP_IDF path: " $ENV{IDF_PATH})
+message("Project path: " ${CMAKE_CURRENT_SOURCE_DIR})
+
+execute_process(COMMAND "cd" $ENV{IDF_PATH})
+execute_process(COMMAND "git" "pull")
+execute_process(COMMAND "git" "submodule" "update" "--init" "--recursive" RESULT_VARIABLE git_result OUTPUT_VARIABLE git_out)
+
+message("Going back to " ${CMAKE_CURRENT_SOURCE_DIR})
+execute_process(COMMAND "cd" ${CMAKE_CURRENT_SOURCE_DIR})
+
+#
+# Setting linker settings for components
+#
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(esp32app)
 
-set_target_properties(idf_component_main PROPERTIES LINKER_LANGUAGE C)
-set_target_properties(idf_component_internal PROPERTIES LINKER_LANGUAGE C)
-set_target_properties(idf_component_utils PROPERTIES LINKER_LANGUAGE C)
-set_target_properties(idf_component_wifi PROPERTIES LINKER_LANGUAGE C)
+MACRO(SUBDIRLIST result curdir)
+    FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
+    SET(dirlist "")
+    FOREACH (child ${children})
+        IF (IS_DIRECTORY ${curdir}/${child})
+            LIST(APPEND dirlist ${child})
+        ENDIF ()
+    ENDFOREACH ()
+    SET(${result} ${dirlist})
+ENDMACRO()
+
+MACRO(REGISTER_LINKER)
+    SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR}/components)
+    FOREACH (subdir ${SUBDIRS})
+        message("Setting linker for " ${subdir})
+        set_target_properties(idf_component_${subdir} PROPERTIES LINKER_LANGUAGE C)
+        message("\t done.")
+    ENDFOREACH ()
+ 
+    set_target_properties(idf_component_main PROPERTIES LINKER_LANGUAGE C)
+ENDMACRO()
+
+message("Parsing components...")
+REGISTER_LINKER()
