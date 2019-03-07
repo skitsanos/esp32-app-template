@@ -38,3 +38,7 @@ ENDMACRO()
 
 message("Parsing components...")
 REGISTER_LINKER()
+
+# resetting SDK Config
+file(READ sdkconfig-template SDKCONFIG_TEMPLATE)
+file(WRITE sdkconfig ${SDKCONFIG_TEMPLATE})
